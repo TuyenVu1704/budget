@@ -1,103 +1,75 @@
 import { useState } from "react";
-import "../../assets/style.css";
 import { useDispatch } from "react-redux";
+import { addData } from "../../store/dataReducerSlice";
 
 function Form() {
-    const [selected, setSelected] = useState("inc");
-    const [descText, setDescText] = useState(" ");
-    const [amountMoney, setAmountMoney] = useState(" ");
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    id: self.crypto.randomUUID(),
+    title: " ",
+    amount: " ",
+    status: "inc",
+  });
 
-    const dispatch = useDispatch();
-    function handleSubmit() {
-        setDescText(" ");
-        setAmountMoney(" ");
-        if (selected !== "inc") {
-            return dispatch({
-                type: "exp",
-                title: descText,
-                payload: amountMoney,
-                status: "exp",
-            });
-        }
-        return dispatch({
-            type: "income",
-            title: descText,
-            payload: amountMoney,
-            status: "inc",
-        });
-    }
-    const typeFocus = "red-focus";
-    let contentSelect = (
-        <div>
-            <select
-                value={selected}
-                onChange={(e) => setSelected(e.target.value)}
-                className="add__type"
-            >
-                <option value="inc" selected>
-                    +
-                </option>
-                <option value="exp">-</option>
-            </select>
-            <input
-                type="text"
-                className="add__description"
-                placeholder="Add description"
-                value={descText}
-                onChange={(e) => setDescText(e.target.value)}
-            />
-            <input
-                type="number"
-                className="add__value"
-                placeholder="Value"
-                value={amountMoney}
-                onChange={(e) => setAmountMoney(e.target.value)}
-            />
-            <button className="add__btn" onClick={handleSubmit}>
-                <i className="ion-ios-checkmark-outline" />
-            </button>
-        </div>
-    );
-    if (selected !== "inc") {
-        contentSelect = (
-            <div>
-                <select
-                    value={selected}
-                    onChange={(e) => setSelected(e.target.value)}
-                    className={`add__type ${typeFocus}`}
-                >
-                    <option value="inc">+</option>
-                    <option value="exp" selected>
-                        -
-                    </option>
-                </select>
-                <input
-                    type="text"
-                    className={`add__description ${typeFocus}`}
-                    placeholder="Add description"
-                    value={descText}
-                    onChange={(e) => setDescText(e.target.value)}
-                />
-                <input
-                    type="number"
-                    className={`add__value ${typeFocus}`}
-                    placeholder="Value"
-                    value={amountMoney}
-                    onChange={(e) => setAmountMoney(e.target.value)}
-                />
-                <button className={`add__btn red`} onClick={handleSubmit}>
-                    <i className={`ion-ios-checkmark-outline ${typeFocus}`} />
-                </button>
-            </div>
-        );
-    }
-    return (
-        <div className="bottom">
-            <div className="add">
-                <div className="add__container">{contentSelect}</div>
-            </div>
-        </div>
-    );
+  function handleChange(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  }
+  function hanldeSubmit() {
+    dispatch(addData(formData));
+    setFormData({
+      id: self.crypto.randomUUID(),
+      title: " ",
+      amount: " ",
+      status: "inc",
+    });
+  }
+
+  let typeFocus = "red-focus";
+  if (formData.status === "inc") typeFocus = " ";
+  const content = (
+    <div className="add">
+      <div className="add__container">
+        <select
+          className={`add__type ${typeFocus}`}
+          defaultValue={formData.status}
+          onChange={handleChange}
+          value={formData.status}
+          name="status"
+        >
+          <option value="inc" selected>
+            +
+          </option>
+          <option value="exp">-</option>
+        </select>
+        <input
+          type="text"
+          className={`add__description ${typeFocus}`}
+          placeholder="Add description"
+          value={formData.title}
+          name="title"
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          className={`add__value ${typeFocus}`}
+          placeholder="Value"
+          value={formData.amount}
+          name="amount"
+          onChange={handleChange}
+        />
+        <button className={`add__btn ${typeFocus === " " ? " " : "red"}`} onClick={hanldeSubmit}>
+          <i className="ion-ios-checkmark-outline" />
+        </button>
+      </div>
+    </div>
+  );
+
+  return <div>{content}</div>;
 }
 
 export default Form;

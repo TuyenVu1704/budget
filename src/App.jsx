@@ -1,15 +1,23 @@
+import Bottom from "./components/Bottom";
 import Form from "./components/Form";
-import List from "./components/List";
 import Top from "./components/Top";
 
 function App() {
-    return (
-        <>
-            <Top />
-            <Form />
-            <List />
-        </>
-    );
+  return (
+    <>
+      <div>
+        <div className="top">
+          <Top />
+        </div>
+        <div className="bottom">
+          <Form />
+          <div className="container clearfix">
+            <Bottom />
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default App;
